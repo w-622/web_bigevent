@@ -31,13 +31,32 @@ $(function(){
         // 阻止表单的默认提交
         e.prevertDefault()
         $.ajax({
-            method: 'post',
-            url: 'http://ajax.frontend.itheima.net/api/reguser',
+            method: 'POST',
+            url: '/api/reguser',
             data: {username: $('#form_reg [name=username]').val(), password:$('#form_reg [name=password]').val()},
             success: function(res){
                 if(res.status !== 0) return layer.msg(res.message)
                 layer.msg('注册成功！')
+                $('#link_login').click()
             }
         })
     }) 
+
+    // 监听登录表单的提交事件
+    $('#form_login').on('submit', function(e){
+        e.prevertDefault()
+        $.ajax({
+            method: 'post',
+            url: '/api/login',
+            // 快速获得表单中的数据
+            data: $(this).serialize(),
+            success: function(res){
+                if(res.status !== 0) return layer.msg('登录失败！')
+                layer.msg('登录成功！')
+                localStorage.setItem('token', res.token)
+                // 登录成功后 跳转到后台主页
+                location.href = '/index.html'
+            }
+        })
+    })
 })
